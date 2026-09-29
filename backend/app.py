@@ -20,6 +20,10 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
     return response
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({'status': 'ok', 'message': 'E-commerce API is running'})
+
 @app.route('/', defaults={'path': ''}, methods=['OPTIONS'])
 @app.route('/<path:path>', methods=['OPTIONS'])
 def options_handler(path):
