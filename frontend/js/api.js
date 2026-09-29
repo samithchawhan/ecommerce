@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://ecommerce-onsq.onrender.com/api';
 
 async function apiFetch(endpoint, options = {}) {
   const token = localStorage.getItem('volta_token');
