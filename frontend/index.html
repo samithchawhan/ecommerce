@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOLTA — Modern E-Commerce</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">VOLTA</a>
+      <div class="nav-search">
+        <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off">
+        <button onclick="applySearch()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+      </div>
+      <div class="nav-actions">
+        <a href="pages/cart.html" class="cart-icon" id="cartBtn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-badge" id="cartCount">0</span>
+        </a>
+        <div class="auth-menu" id="authMenu">
+          <button class="btn-auth" onclick="window.location.href='pages/login.html'">Sign in</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">New arrivals, curated for you</p>
+      <h1 class="hero-title">Products built<br>to <em>last</em>.</h1>
+      <p class="hero-sub">From electronics to lifestyle — quality without compromise.</p>
+      <button class="btn-primary" onclick="document.getElementById('products-section').scrollIntoView({behavior:'smooth'})">
+        Shop Now
+      </button>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Featured product" />
+        <div class="hero-card-tag">↑ 48% this week</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories-strip">
+    <div class="container">
+      <div class="cat-pills" id="categoryPills">
+        <button class="cat-pill active" data-slug="all" onclick="filterCategory('all', this)">All</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="products-section" id="products-section">
+    <div class="container">
+      <div class="products-header">
+        <h2 id="sectionTitle">All Products</h2>
+        <div class="sort-row">
+          <label>Sort by</label>
+          <select id="sortSelect" onchange="applySorting()">
+            <option value="newest">Newest</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-grid" id="productsGrid">
+        <!-- Products injected by JS -->
+      </div>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </section>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-cols">
+        <div>
+          <div class="logo" style="margin-bottom:0.75rem">VOLTA</div>
+          <p style="color:#94a3b8;font-size:0.875rem;max-width:220px">Quality products, seamlessly delivered to your door.</p>
+        </div>
+        <div>
+          <h4>Shop</h4>
+          <a href="#">Electronics</a>
+          <a href="#">Clothing</a>
+          <a href="#">Books</a>
+          <a href="#">Home & Garden</a>
+        </div>
+        <div>
+          <h4>Account</h4>
+          <a href="pages/login.html">Sign In</a>
+          <a href="pages/register.html">Register</a>
+          <a href="pages/orders.html">My Orders</a>
+        </div>
+        <div>
+          <h4>Help</h4>
+          <a href="#">FAQ</a>
+          <a href="#">Shipping Policy</a>
+          <a href="#">Returns</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 VOLTA. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

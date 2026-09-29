@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — VOLTA</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="logo">VOLTA</a>
+      <div style="flex:1"></div>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge" id="cartCount">0</span>
+        </a>
+        <div class="auth-menu" id="authMenu"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container checkout-page">
+    <h1 class="page-title">Checkout</h1>
+    <div class="checkout-grid">
+      <div class="checkout-form">
+        <div class="section-card">
+          <h2>Shipping Information</h2>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="shipName" placeholder="Jane Smith">
+          </div>
+          <div class="form-group">
+            <label>Street Address</label>
+            <input type="text" id="shipAddress" placeholder="123 Main Street, Apt 4B">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="shipCity" placeholder="New York">
+            </div>
+            <div class="form-group">
+              <label>ZIP / Postal Code</label>
+              <input type="text" id="shipZip" placeholder="10001">
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2>Payment Method</h2>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="card" checked>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <div>
+              <div style="font-weight:600;font-size:14px">Credit / Debit Card</div>
+              <div style="font-size:12px;color:var(--text-muted)">Visa, Mastercard, Amex</div>
+            </div>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="paypal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11.5C7 9 9 7 11.5 7H16c1.5 0 2.5 1 2.5 2.5S17.5 12 16 12H11"/><path d="M4 16.5C4 14 6 12 8.5 12H13c1.5 0 2.5 1 2.5 2.5S14.5 17 13 17H8L6 22"/></svg>
+            <div>
+              <div style="font-weight:600;font-size:14px">PayPal</div>
+              <div style="font-size:12px;color:var(--text-muted)">Fast and secure</div>
+            </div>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="cod">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <div>
+              <div style="font-weight:600;font-size:14px">Cash on Delivery</div>
+              <div style="font-size:12px;color:var(--text-muted)">Pay when you receive</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-error" id="checkoutError"></div>
+
+        <button class="btn-primary" style="width:100%;padding:16px;font-size:16px;border-radius:8px" onclick="placeOrder()" id="placeBtn">
+          Place Order
+        </button>
+      </div>
+
+      <div class="order-sidebar">
+        <div class="section-card">
+          <h2>Your Order</h2>
+          <div class="order-items-summary" id="orderSummaryItems"></div>
+          <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal"></span></div>
+          <div class="summary-row"><span>Shipping</span><span id="sumShipping"></span></div>
+          <div class="summary-row"><span>Tax (8%)</span><span id="sumTax"></span></div>
+          <div class="summary-row total"><span>Total</span><span id="sumTotal"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Success Modal -->
+  <div id="successModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:48px;text-align:center;max-width:420px;width:90%">
+      <div style="font-size:64px;margin-bottom:16px">🎉</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:8px">Order Placed!</h2>
+      <p style="color:var(--text-muted);margin-bottom:8px">Order <strong id="orderId" style="color:var(--accent)"></strong></p>
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:28px">We're processing your order. You'll receive a confirmation shortly.</p>
+      <button class="btn-primary" style="width:100%" onclick="window.location.href='orders.html'">View My Orders</button>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!Auth.user) location.href = 'login.html';
+    Auth.renderNav();
+
+    function renderSummary() {
+      const items = Cart.items;
+      const subtotal = Cart.total;
+      const shipping = subtotal > 50 ? 0 : 5.99;
+      const tax = subtotal * 0.08;
+      const total = subtotal + shipping + tax;
+
+      document.getElementById('orderSummaryItems').innerHTML = items.map(i => `
+        <div class="summary-product">
+          <img src="${i.image_url}" alt="${i.name}" onerror="this.src='https://via.placeholder.com/48/161b27/6c63ff?text=?'">
+          <div style="flex:1">
+            <div class="summary-product-name">${i.name}</div>
+            <div class="summary-product-qty">Qty: ${i.quantity}</div>
+          </div>
+          <div class="summary-product-price">${formatPrice(i.price * i.quantity)}</div>
+        </div>`).join('');
+
+      document.getElementById('sumSubtotal').textContent = formatPrice(subtotal);
+      document.getElementById('sumShipping').innerHTML = shipping === 0
+        ? '<span style="color:var(--green)">Free</span>' : formatPrice(shipping);
+      document.getElementById('sumTax').textContent = formatPrice(tax);
+      document.getElementById('sumTotal').textContent = formatPrice(total);
+    }
+
+    async function placeOrder() {
+      const name = document.getElementById('shipName').value.trim();
+      const address = document.getElementById('shipAddress').value.trim();
+      const city = document.getElementById('shipCity').value.trim();
+      const zip = document.getElementById('shipZip').value.trim();
+      const payment = document.querySelector('input[name=payment]:checked').value;
+      const errEl = document.getElementById('checkoutError');
+
+      if (!name || !address || !city || !zip) {
+        errEl.textContent = 'Please fill in all shipping fields.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const btn = document.getElementById('placeBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing…';
+
+      try {
+        const order = await API.createOrder({
+          items: Cart.items.map(i => ({ product_id: i.id, quantity: i.quantity })),
+          shipping: { name, address, city, zip },
+          payment_method: payment
+        });
+
+        Cart.clear();
+        document.getElementById('orderId').textContent = `#${order.order_id}`;
+        const modal = document.getElementById('successModal');
+        modal.style.display = 'flex';
+      } catch(e) {
+        errEl.textContent = e.message || 'Order failed. Please try again.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Place Order';
+      }
+    }
+
+    // Pre-fill name if logged in
+    if (Auth.user) {
+      document.getElementById('shipName').value = Auth.user.name;
+    }
+
+    renderSummary();
+  </script>
+</body>
+</html>

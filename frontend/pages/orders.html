@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — VOLTA</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="logo">VOLTA</a>
+      <div style="flex:1"></div>
+      <div class="nav-actions">
+        <a href="cart.html" class="cart-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge" id="cartCount">0</span>
+        </a>
+        <div class="auth-menu" id="authMenu"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container orders-page">
+    <h1 class="page-title">My Orders</h1>
+    <div id="ordersContainer"><div class="loading-spinner"></div></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!Auth.user) { location.href = 'login.html'; }
+    Auth.renderNav();
+
+    async function loadOrders() {
+      const el = document.getElementById('ordersContainer');
+      try {
+        const orders = await API.getOrders();
+        if (orders.length === 0) {
+          el.innerHTML = `
+            <div class="empty-cart">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M9 11H3l3-7h12l3 7H15"/><path d="M9 11v7h6v-7"/><path d="M9 11H6l1-3h10l1 3h-3"/>
+              </svg>
+              <h3>No orders yet</h3>
+              <p>Start shopping to see your orders here.</p>
+              <a href="../index.html" class="btn-primary">Browse Products</a>
+            </div>`;
+          return;
+        }
+
+        el.innerHTML = orders.map(order => {
+          const statusClass = {
+            pending: 'status-pending',
+            processing: 'status-processing',
+            shipped: 'status-shipped',
+            delivered: 'status-delivered'
+          }[order.status] || 'status-pending';
+
+          return `
+            <div class="order-card">
+              <div class="order-header">
+                <div>
+                  <div class="order-id">Order #${order.id}</div>
+                  <div class="order-date">${formatDate(order.created_at)}</div>
+                </div>
+                <span class="order-status ${statusClass}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+              </div>
+
+              <div class="order-items-list">
+                ${order.items.slice(0, 4).map(item => `
+                  <div class="order-item-thumb">
+                    <img src="${item.image_url}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/36/161b27/6c63ff?text=?'">
+                    <span>${item.name} ×${item.quantity}</span>
+                  </div>`).join('')}
+                ${order.items.length > 4 ? `<div class="order-item-thumb" style="color:var(--text-muted)">+${order.items.length - 4} more</div>` : ''}
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  ${order.shipping_address ? `
+                    <div style="font-size:12px;color:var(--text-dim)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      ${order.shipping_city}
+                    </div>` : ''}
+                </div>
+                <div class="order-total">Total: ${formatPrice(order.total)}</div>
+              </div>
+            </div>`;
+        }).join('');
+      } catch(e) {
+        el.innerHTML = `<p style="color:var(--red)">Failed to load orders: ${e.message}</p>`;
+      }
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>
