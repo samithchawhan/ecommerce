@@ -13,10 +13,10 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Check Flask
-python3 -c "import flask" 2>/dev/null || {
-    echo "Installing Flask..."
-    pip3 install flask --break-system-packages
+# Check backend dependencies
+python3 -c "import flask, pymongo, dotenv" 2>/dev/null || {
+    echo "Installing backend dependencies..."
+    pip3 install -r requirements.txt --break-system-packages
 }
 
 # Start backend

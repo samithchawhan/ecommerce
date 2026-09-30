@@ -1,3 +1,5 @@
 Flask
 PyJWT
 gunicorn
+pymongo[srv]
+python-dotenv
